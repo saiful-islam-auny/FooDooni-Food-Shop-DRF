@@ -6,6 +6,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from account.utils import Util
 from django.contrib.auth.tokens import default_token_generator
 
+# User Registration Serializer
 class UserRegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     name = serializers.CharField(max_length=200)
@@ -26,7 +27,7 @@ class UserRegistrationSerializer(serializers.Serializer):
         password = validated_data['password']
         tc = validated_data['tc']
 
-        # Create the user without activating it initially
+        # Create user object but don't save it to the database
         user = User.objects.create_user(
             email=email,
             name=name,
@@ -46,6 +47,7 @@ class UserRegistrationSerializer(serializers.Serializer):
         data = {'subject': 'Activate Your Account', 'body': body, 'to_email': email}
         Util.send_email(data)
 
+        # Do not save the user yet, only return a success message
         return {"msg": "Registration successful. Please check your email to activate your account."}
 
 
@@ -82,7 +84,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
   class Meta:
     fields = ['email']
 
-  def validate(self, attrs):
+def validate(self, attrs):
     email = attrs.get('email')
     if User.objects.filter(email=email).exists():
       user = User.objects.get(email = email)
@@ -128,4 +130,3 @@ class UserPasswordResetSerializer(serializers.Serializer):
     except DjangoUnicodeDecodeError as identifier:
       PasswordResetTokenGenerator().check_token(user, token)
       raise serializers.ValidationError('Token is not Valid or Expired')
-  

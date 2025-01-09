@@ -15,6 +15,9 @@ from rest_framework.generics import ListAPIView
 from account.models import User
 from account.serializers import UserProfileSerializer
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -29,26 +32,32 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         response = serializer.create(serializer.validated_data)
-        return Response(response, status=status.HTTP_201_CREATED)
+        return Response({'msg': 'Registration successful. Please check your email to activate your account.'}, status=status.HTTP_201_CREATED)
 
 
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+
+# Activate Account View
 class ActivateAccountView(APIView):
     def get(self, request, uid, token):
         try:
-            # Decode the user email (instead of user ID)
-            email = smart_str(urlsafe_base64_decode(uid))
-            user = User.objects.get(email=email)
+            # Decode the user ID (not the email)
+            uid_decoded = urlsafe_base64_decode(uid)
+            user_id = int(uid_decoded)  # Convert decoded value to integer
+            user = User.objects.get(id=user_id)
 
             # Verify the token
             if not default_token_generator.check_token(user, token):
                 return Response({'error': 'Invalid or Expired Token'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Activate the user
+            # Activate the user and save to the database
             if user.is_active:
                 return Response({'error': 'User already activated.'}, status=status.HTTP_400_BAD_REQUEST)
 
             user.is_active = True
-            user.save()
+            user.save()  # Now save the user to the database
 
             return Response({'msg': 'Account activated successfully'}, status=status.HTTP_200_OK)
 
@@ -107,3 +116,4 @@ class UserListView(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAdminUser]  # Only admins can access
+

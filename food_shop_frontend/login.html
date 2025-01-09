@@ -55,34 +55,22 @@
     </nav>
     <!-- END nav -->
 
+    <!-- Login Form -->
     <section class="ftco-section contact-section">
         <div class="container mt-2">
             <div class="row block-9">
                 <div class="col-md-2"></div>
                 <div class="col-md-8 ftco-animate">
                     <h2 class="h4 text-center mb-4">Login</h2>
-                    <form id="loginForm" class="contact-form">
+                    <form id="loginForm" class="contact-form" onsubmit="handleLogin(event)">
                         <div class="form-group">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                class="form-control" 
-                                placeholder="Your Email" 
-                                required>
+                            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <input 
-                                type="password" 
-                                name="password" 
-                                class="form-control" 
-                                placeholder="Password" 
-                                required>
+                            <input type="password" name="password" class="form-control" placeholder="Password" required>
                         </div>
                         <div class="form-group text-center">
-                            <input 
-                                type="submit" 
-                                value="Login" 
-                                class="btn btn-primary py-3 px-5">
+                            <input type="submit" value="Login" class="btn btn-primary py-3 px-5">
                         </div>
                         <div class="form-group text-center">
                             <p>Don't have an account? <a href="/signup.html">Sign Up</a></p>
@@ -109,6 +97,7 @@
     </svg></div>
 
 
+<script src="js/auth.js"></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate-3.0.1.min.js"></script>
 <script src="js/popper.min.js"></script>
@@ -123,8 +112,8 @@
 <script src="js/bootstrap-datepicker.js"></script>
 <script src="js/jquery.timepicker.min.js"></script>
 <script src="js/scrollax.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-<script src="js/google-map.js"></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script> -->
+<!-- <script src="js/google-map.js"></script> -->
 <script src="js/main.js"></script>
 
 </body>

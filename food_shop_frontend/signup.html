@@ -41,14 +41,16 @@
             </button>
             <div class="collapse navbar-collapse" id="ftco-nav">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="menu.html" class="nav-link">Menu</a></li>
-                    <!-- <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li> -->
-                    <!-- <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li> -->
-                    <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-                    <li class="nav-item active"><a href="contact.html" class="nav-link">Contact</a></li>
-                    <li class="nav-item active"><a href="signup.html" class="nav-link">Signup</a></li>
-                    <li class="nav-item active"><a href="login.html" class="nav-link">Login</a></li>
+                    <nav class="navbar">
+                        <a href="/index.html">Home</a>
+                        <a href="/menu.html">Menu</a>
+                        <a href="/about.html">About Us</a>
+                        <a href="/contact.html">Contact</a>
+                        <div id="auth-links">
+                            <!-- Dynamic Links (Login/Signup or Profile/Logout) will be injected here -->
+                        </div>
+                    </nav>
+                    
                 </ul>
             </div>
         </div>
@@ -61,6 +63,8 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8 ftco-animate">
                     <h2 class="h4 text-center mb-4">Sign Up</h2>
+                    <!-- Success Message -->
+                    <p id="success" class="text-success text-center"></p>
                     <form id="signupForm" class="contact-form" onsubmit="handleRegistration(event)">
                         <p id="error" class="text-danger"></p>
                         <div class="form-group">
@@ -116,6 +120,7 @@
             </div>
         </div>
     </section>
+    
     
 </body>
 
