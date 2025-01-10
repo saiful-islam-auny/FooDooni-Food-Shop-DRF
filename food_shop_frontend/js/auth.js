@@ -92,10 +92,11 @@ const handleLogin = (event) => {
   }
 };
 
+
 document.addEventListener("DOMContentLoaded", function () {
   // Get token from localStorage
   const token = localStorage.getItem("token");
-  console.log("Token found:", token);
+  // console.log("Token found:", token);
 
   // Select navbar elements
   const loginLink = document.getElementById("loginLink");
