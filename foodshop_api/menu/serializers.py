@@ -8,10 +8,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class FoodItemSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()  # Display category name instead of ID
+    discounted_price = serializers.SerializerMethodField()  # Add discounted price
 
     class Meta:
         model = models.FoodItem
-        fields = ['id', 'name', 'description', 'price', 'image', 'category']
+        fields = ['id', 'name', 'description', 'price', 'discounted_price', 'image', 'category']
+
+    def get_discounted_price(self, obj):
+        return obj.get_discounted_price()
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')

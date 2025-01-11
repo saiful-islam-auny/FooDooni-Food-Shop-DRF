@@ -11,4 +11,5 @@ router.register(r'food-items', FoodItemViewSet, basename='food-item')
 urlpatterns = [
     path('', include(router.urls)),  # Includes categories and food-items routes
     path('specials/', SpecialsView.as_view(), name='specials'),  # Route for specials
+    
 ]
