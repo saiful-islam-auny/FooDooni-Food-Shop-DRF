@@ -17,9 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Render category tabs
         const isActive = index === 0 ? "active" : "";
         menuTabs.innerHTML += `
-                    <a class="nav-link ${isActive}" id="tab-${
-          category.id
-        }" data-toggle="pill" 
+                    <a class="nav-link ${isActive}" id="tab-${category.id
+          }" data-toggle="pill" 
                         href="#menu-${category.id}" role="tab" 
                         aria-controls="menu-${category.id}" 
                         aria-selected="${index === 0}">
@@ -34,9 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         role="tabpanel" 
                         aria-labelledby="tab-${category.id}">
                         <div class="row" id="menu-items-${category.id}">
-                            <!-- Menu items for ${
-                              category.name
-                            } will be loaded here -->
+                            <!-- Menu items for ${category.name
+          } will be loaded here -->
                         </div>
                     </div>
                 `;
@@ -59,23 +57,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 categoryContainer.innerHTML += `
                                     <div class="col-md-4 text-center">
                                         <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(${
-                                              item.image
-                                            });"></a>
+                                            <a href="#" class="menu-img img mb-4" style="background-image: url(${item.image
+                  });"></a>
                                             <div class="text">
-                                                <h3><a href="#">${
-                                                  item.name
-                                                }</a></h3>
+                                                <h3><a href="#">${item.name
+                  }</a></h3>
                                                 <p>${item.description
-                                                  .split(" ")
-                                                  .slice(0, 10)
-                                                  .join(" ")}...</p>
-                                                <p class="price"><span>$${
-                                                  item.price
-                                                }</span></p>
-                                <p><button class="btn btn-white btn-outline-white add-to-cart" data-id="${
-                                  item.id
-                                }">Add to cart</button></p>
+                    .split(" ")
+                    .slice(0, 10)
+                    .join(" ")}...</p>
+                                                <p class="price"><span>$${item.price
+                  }</span></p>
+                                <p><button class="btn btn-white btn-outline-white add-to-cart" data-id="${item.id
+                  }">Add to cart</button></p>
                                             </div>
                                         </div>
                                     </div>
@@ -147,25 +141,23 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="col-md-4 mb-5">
               <div class="card h-100">
                 <div class="position-relative">
-                  <img src="${imageUrl}" class="card-img-top" alt="${
-          item.name
-        }">
+                  <img src="${imageUrl}" class="card-img-top" alt="${item.name
+          }">
                   <div class="discount-badge">-${discountPercentage}%</div>
                 </div>
                 <div class="card-body d-flex flex-column">
                   <h5 class="card-title">${item.name}</h5>
                   <p class="card-text">${item.description
-                    .split(" ")
-                    .slice(0, 10)
-                    .join(" ")}...</p>
+            .split(" ")
+            .slice(0, 10)
+            .join(" ")}...</p>
                   <div class="mt-auto">
                     <p class="price mb-3">
                       <span style="text-decoration: line-through; color: white;">$${originalPrice}</span>
                       <span style="color: #7FFF00; font-weight: bold;"> $${discountedPrice}</span>
                     </p>
-                    <p><button class="btn btn-white btn-outline-white add-to-cart" data-id="${
-                      item.id
-                    }">Add to cart</button></p>                  </div>
+                    <p><button class="btn btn-white btn-outline-white add-to-cart" data-id="${item.id
+          }">Add to cart</button></p>                  </div>
                 </div>
               </div>
             </div>
@@ -184,7 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// add cart item
+
+// cart functionality start fom here
 document.addEventListener("DOMContentLoaded", () => {
   const API_CART_URL = "http://127.0.0.1:8000/api/cart/";
 
@@ -207,13 +200,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  function showLoginModal() {
+    const modal = document.getElementById("login-modal");
+    const closeBtn = modal.querySelector(".close-btn");
+    const loginBtn = document.getElementById("login-btn");
+
+    // Show the modal
+    modal.style.display = "block";
+
+    // Close the modal when clicking the close button
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // Redirect to the login page when clicking the login button
+    loginBtn.addEventListener("click", () => {
+      window.location.href = "./login.html";
+    });
+
+    // Close the modal when clicking outside of it
+    window.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
+
   // Add item to cart
   function addToCart(foodItemId) {
     const token = localStorage.getItem("token"); // Get user's auth token
 
     if (!token) {
-      alert("Please log in to add items to your cart.");
-      window.location.href = "./login.html";
+      showLoginModal();
       return;
     }
 
@@ -240,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((data) => {
         console.log("Item added to cart successfully:", data);
-        alert("Item added to cart!");
+        showToast("Item added to cart!", "success");
 
         // Update cart item count in the navbar
         if (data.cart_item_count !== undefined) {
@@ -254,8 +272,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // window.location.href = "/cart.html";
       })
       .catch((error) => {
-        console.error("Error adding item to cart:", error);
-        alert("Failed to add item to cart. Please try again.");
+        console.error("Failed to add item to cart:", error);
+        showToast("Failed to add item to cart!", "error");
       });
   }
 });
@@ -331,16 +349,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      cartItemsContainer.innerHTML = `<tr><td colspan="6" class="text-danger text-center">Please log in to view your cart.</td></tr>`;
+      cartItemsContainer.innerHTML = `
+      <div class="col-12 text-danger text-center">Please log in to view your cart.</div>
+    `;
       cartTotalContainer.textContent = "Total: $0.00";
       return;
     }
 
     cartItemsContainer.innerHTML = `
-      <tr>
-        <td colspan="6" class="text-muted text-center">Loading your cart...</td>
-      </tr>
-    `;
+    <div class="col-12 text-muted text-center">Loading your cart...</div>
+  `;
 
     fetch(API_CART_URL, {
       method: "GET",
@@ -355,12 +373,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return response.json();
       })
       .then((data) => {
-        console.log("Fetched Cart Items:", data);
-
         cartItemsContainer.innerHTML = ""; // Clear existing items
 
         if (!data.items || data.items.length === 0) {
-          cartItemsContainer.innerHTML = `<tr><td colspan="6" class="text-center">Your cart is empty.</td></tr>`;
+          cartItemsContainer.innerHTML = `
+          <div class="col-12 text-center">Your cart is empty.</div>
+        `;
           cartTotalContainer.textContent = "Total: $0.00";
           return;
         }
@@ -374,42 +392,65 @@ document.addEventListener("DOMContentLoaded", () => {
               : `http://127.0.0.1:8000${item.food_item.image}`
             : "https://via.placeholder.com/50";
 
-          const price = parseFloat(item.food_item.price) || 0;
+          const price = parseFloat(item.food_item.discounted_price || item.food_item.price) || 0;
           const total = (price * item.quantity).toFixed(2);
           totalCartPrice += price * item.quantity;
 
-          const rowHTML = `
-            <tr data-id="${item.food_item.id}">
-              <td><img src="${imageUrl}" alt="${
-            item.food_item.name
-          }" class="cart-item-img"></td>
-              <td>${item.food_item.name}</td>
-              <td>$${price.toFixed(2)}</td>
-              <td>
-                <button class="btn btn-sm btn-primary increment-quantity">+</button>
-                <span class="mx-2 item-quantity">${item.quantity}</span>
-                <button class="btn btn-sm btn-secondary decrement-quantity">-</button>
-              </td>
-              <td>$<span class="item-total">${total}</span></td>
-              <td><button class="btn btn-sm btn-danger remove-item">Remove</button></td>
-            </tr>
-          `;
-          cartItemsContainer.innerHTML += rowHTML;
+          const blockHTML = `
+          <div class="col-12 mb-4 cart-item" data-id="${item.food_item.id}">
+            <div class="cart-item-content">
+              <!-- Row 1: Image -->
+              <div class="col-3">
+                <img src="${imageUrl}" class="cart-item-img" alt="${item.food_item.name}">
+              </div>
+        
+              <!-- Row 2: Name and Price -->
+              <div class="col-3">
+                <div class="cart-item-details">
+                  <h5 class="cart-item-title">${item.food_item.name}</h5>
+                  <p class="cart-item-price">$${price.toFixed(2)}</p>
+                </div>
+              </div>
+        
+              <!-- Row 3: Quantity and Total -->
+              <div class="col-3">
+                <div class="quantity-control">
+                  <button class="btn btn-sm btn-primary increment-quantity" aria-label="Increase quantity">+</button>
+                  <span class="mx-2 item-quantity">${item.quantity}</span>
+                  <button class="btn btn-sm btn-secondary decrement-quantity" aria-label="Decrease quantity">-</button>
+                </div>
+                <div class="cart-item-total">
+                  <p>Total: $<span class="item-total">${total}</span></p>
+                </div>
+              </div>
+        
+              <!-- Row 4: Remove Button -->
+              <div class="col-3">
+                <button class="btn btn-sm btn-danger remove-item" aria-label="Remove item from cart">X</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+
+          cartItemsContainer.innerHTML += blockHTML;
         });
 
         cartTotalContainer.textContent = `Total: $${totalCartPrice.toFixed(2)}`;
       })
       .catch((error) => {
         console.error("Error fetching cart items:", error);
-        cartItemsContainer.innerHTML = `<tr><td colspan="6" class="text-danger text-center">Failed to load cart items. Please try again later.</td></tr>`;
+        cartItemsContainer.innerHTML = `
+        <div class="col-12 text-danger text-center">Failed to load cart items. Please try again later.</div>
+      `;
       });
   }
 
   // Update quantity (increment or decrement)
   cartItemsContainer.addEventListener("click", (event) => {
     const button = event.target;
-    const row = button.closest("tr");
-    const foodItemId = row ? row.getAttribute("data-id") : null;
+    const card = button.closest(".cart-item");
+    const foodItemId = card ? card.getAttribute("data-id") : null;
 
     if (!foodItemId) return;
 
@@ -490,3 +531,27 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/order"; // Replace "/order" with your actual order page URL
   });
 });
+
+function showToast(message, type = "success") {
+  // Create the toast element
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  // Add content to the toast
+  toast.innerHTML = `
+    <div class="toast-icon">
+      ${type === "success" ? "✔️" : type === "error" ? "❌" : "ℹ️"}
+    </div>
+    <div>${message}</div>
+  `;
+
+  // Append to the toast container
+  const container = document.getElementById("toast-container");
+  container.appendChild(toast);
+
+  // Remove the toast after 5 seconds
+  setTimeout(() => {
+    toast.remove();
+  }, 5000);
+}
+

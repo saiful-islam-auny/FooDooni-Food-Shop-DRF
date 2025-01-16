@@ -124,3 +124,165 @@ document.addEventListener("DOMContentLoaded", function () {
     profileLink.classList.add("d-none");
   }
 });
+
+
+
+// profile showing
+const API_PROFILE_URL = "http://127.0.0.1:8000/api/user/profile/";
+const API_CHANGE_PASSWORD_URL = "http://127.0.0.1:8000/api/user/changepassword/";
+const API_RESET_PASSWORD_URL = "http://127.0.0.1:8000/api/user/send-reset-password-email/";
+
+
+function showToastProfile(message, type = "info") {
+  let container = document.getElementById("toast-profile-container");
+  
+  // If the container doesn't exist, create it
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "toast-profile-container";
+    document.body.appendChild(container); // You can append it to any other parent
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast-profile ${type}`;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  toast.style.opacity = "1";
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => {
+      toast.remove();
+    }, 300); // Match fade-out duration
+  }, 3000);
+}
+
+
+// Fetch user profile
+function fetchUserProfile() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    Profile("Please log in to access your profile.", "error");
+    window.location.href = "./login.html";
+    return;
+  }
+
+  fetch(API_PROFILE_URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch user profile");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("user-name").textContent = data.name;
+      document.getElementById("user-email").textContent = data.email;
+    })
+    .catch((error) => {
+      console.error(error);
+      Profile("Error fetching profile data.", "error");
+    });
+  console.log(container); // This should not be null
+}
+
+// Handle password change
+function setupChangePasswordModal() {
+  const changePasswordModal = document.getElementById("change-password-modal");
+  const closeBtn = document.getElementById("close-change-password");
+  const changePasswordForm = document.getElementById("change-password-form");
+
+  // Show the modal when the button is clicked
+  document.getElementById("change-password-btn").addEventListener("click", () => {
+    changePasswordModal.style.display = "block";
+  });
+
+  // Close the modal when the close button is clicked
+  closeBtn.addEventListener("click", () => {
+    console.log("Closing modal..."); // Debugging line
+    changePasswordModal.style.display = "none";
+  });
+
+
+  // Handle form submission
+  changePasswordForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const newPassword = document.getElementById("new-password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+
+    if (newPassword !== confirmPassword) {
+      showToastProfile("Passwords do not match!", "error");
+      return;
+    }
+
+    // Send the password change request
+    fetch(API_CHANGE_PASSWORD_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ password: newPassword, password2: confirmPassword }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.detail || "Failed to change password");
+          });
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Close the modal first, then show the success toast
+        changePasswordModal.style.display = "none";
+        showToastProfile("Password changed successfully!", "success");
+      })
+      .catch((error) => {
+        console.error(error);
+        showToastProfile("Error changing password.", "error");
+      });
+  });
+}
+
+setupChangePasswordModal();
+
+
+// Handle reset password
+document.getElementById("reset-password-btn").addEventListener("click", () => {
+  const email = document.getElementById("user-email").textContent;
+
+  fetch(API_RESET_PASSWORD_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to send reset email");
+      }
+      return response.json();
+    })
+    .then(() => {
+      Profile("Reset password email sent!", "success");
+    })
+    .catch((error) => {
+      console.error(error);
+      Profile("Error sending reset email.", "error");
+    });
+});
+
+// Initialize
+fetchUserProfile();
+setupChangePasswordModal();
+
+
+

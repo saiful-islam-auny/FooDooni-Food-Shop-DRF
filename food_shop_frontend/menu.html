@@ -70,16 +70,29 @@
 						<a href="login.html" onclick="logout()" class="nav-link">Logout</a>
 					</li>
 					<li class="nav-item">
-                        <a href="cart.html" class="nav-link">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="badge badge-pill badge-danger" id="cart-item-count">0</span>
-                        </a>
-                    </li>
+						<a href="cart.html" class="nav-link">
+							<i class="fas fa-shopping-cart"></i>
+							<span class="badge badge-pill badge-danger" id="cart-item-count">0</span>
+						</a>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 	<!-- END nav -->
+
+	<!-- alert start -->
+	<div id="toast-container"></div>
+
+	<div id="login-modal" class="modal">
+		<div class="modal-content">
+			<span class="close-btn">&times;</span>
+			<h3>Login Required</h3>
+			<p>Please log in to add items to your cart.</p>
+			<button id="login-btn" class="btn btn-primary">Log In</button>
+		</div>
+	</div>
+	<!-- alert end -->
 
 	<section class="home-slider owl-carousel img" style="background-image: url(images/bg_1.jpg);">
 
@@ -102,18 +115,18 @@
 	<!-- discount  -->
 	<section class="ftco-section">
 		<div class="container">
-		  <div class="row justify-content-center mb-5 pb-3">
-			<div class="col-md-7 heading-section ftco-animate text-center">
-			  <h2 class="mb-4">Discount Hot Items</h2>
-			  <p>Grab your favorite dishes at amazing discounted prices!</p>
+			<div class="row justify-content-center mb-5 pb-3">
+				<div class="col-md-7 heading-section ftco-animate text-center">
+					<h2 class="mb-4">Discount Hot Items</h2>
+					<p>Grab your favorite dishes at amazing discounted prices!</p>
+				</div>
 			</div>
-		  </div>
-	  
-		  <div class="row" id="discount-items">
-			<!-- Discount items will be dynamically inserted here -->
-		  </div>
+
+			<div class="row" id="discount-items">
+				<!-- Discount items will be dynamically inserted here -->
+			</div>
 		</div>
-	  </section>
+	</section>
 
 
 	<!-- menu start -->

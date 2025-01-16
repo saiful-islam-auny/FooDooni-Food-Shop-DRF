@@ -109,40 +109,28 @@
     </nav>
 
     <main class="container py-5">
-      <div class="cart-container">
-        <!-- Cart Items Section -->
-        <div class="cart-items">
-          <table class="cart-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Item</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="cart-items">
-              <tr>
-                <td colspan="6" class="text-center text-muted">
-                  Loading your cart...
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="row">
+        <!-- Cart Items Section (Full Width on Small Screens, 8 Columns on Larger Screens) -->
+        <div class="col-lg-7 col-md-12">
+          <div class="cart-items">
+            <div class="row" id="cart-items">
+              <!-- Cart items will be dynamically injected here -->
+            </div>
+          </div>
         </div>
-
-        <!-- Total Price and Add to Order Section -->
-        <div class="cart-summary">
-          <h4>Order Summary</h4>
-          <div id="cart-total" class="total-price">Total: $0.00</div>
-          <button id="add-to-order" class="btn btn-success">
-            Add to Order
-          </button>
+    
+        <!-- Order Summary Section (4 Columns on Larger Screens) -->
+        <div class="col-lg-5 col-md-12 mt-4 mt-lg-0">
+          <div class="cart-summary">
+            <h4>Order Summary</h4>
+            <div id="cart-total" class="total-price">Total: $0.00</div>
+            <button id="add-to-order" class="btn btn-success mt-3 w-100">Add to Order</button>
+          </div>
         </div>
       </div>
     </main>
+        
+        
 
     <footer class="ftco-footer ftco-section img">
       <div class="overlay"></div>
