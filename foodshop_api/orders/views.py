@@ -7,6 +7,8 @@ from cart.models import Cart, CartItem
 from .serializers import OrderSerializer
 
 
+from django.utils.timezone import now
+
 class OrderView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -25,17 +27,27 @@ class OrderView(APIView):
         if not delivery_address:
             return Response({"error": "Delivery address is required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Validate phone number
+        phone_number = request.data.get("phone_number")  # Validate phone number
+        if not phone_number:
+            return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
         # Create a new order
-        order = Order.objects.create(user=request.user, delivery_address=delivery_address)
+        order = Order.objects.create(
+            user=request.user,
+            delivery_address=delivery_address,
+            phone_number=phone_number,  # Save phone number in the order
+        )
 
         total_price = 0
         for cart_item in cart.items.all():
+            discounted_price = cart_item.food_item.get_discounted_price()
             OrderItem.objects.create(
                 order=order,
                 food_item=cart_item.food_item,
                 quantity=cart_item.quantity,
             )
-            total_price += cart_item.food_item.price * cart_item.quantity
+            total_price += discounted_price * cart_item.quantity
 
         # Update order total price
         order.total_price = total_price
@@ -56,8 +68,7 @@ class OrderView(APIView):
         orders = Order.objects.filter(user=request.user).order_by('-created_at')
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
+    
 class OrderHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
