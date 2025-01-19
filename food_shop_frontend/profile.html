@@ -83,41 +83,41 @@
     <div id="toast-profile-container"></div>
 
     <div class="profile-container">
-        <div class="col-md-4 profile-info">
+        <div class="col-lg-5 col-md-12 mt-4 mt-lg-0 profile-info">
             <h2>Profile Information</h2>
             <p><strong>Name:</strong> <span id="user-name"></span></p>
             <p><strong>Email:</strong> <span id="user-email"></span></p>
             <div class="profile-btn">
                 <button id="change-password-btn" class="btn btn-primary" style="margin: 5px">Change Password</button>
-                <button id="reset-password-btn" class="btn btn-primary" style="margin: 5px">Reset Password</button>
             </div>
         </div>
 
-        <div class="col-md-8 order-history">
+        <div class="col-lg-7 col-md-12 order-history">
             <h2>Order History</h2>
-            <ul id="order-list">
-                <!-- Order items will be appended here dynamically -->
+            <ul id="order-list" class="order-list">
+                <!-- Orders will be dynamically added here -->
             </ul>
         </div>
+
     </div>
 
 
-<!-- Change Password Modal -->
-<div id="change-password-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="close-change-password">&times;</span>
-        <h2>Change Password</h2>
-        <form id="change-password-form">
-            <label for="new-password">New Password:</label>
-            <input type="password" id="new-password" required>
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-change-password">&times;</span>
+            <h2>Change Password</h2>
+            <form id="change-password-form">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" required>
 
-            <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" required>
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" required>
 
-            <button type="submit" class="btn btn-primary">Change Password</button>
-        </form>
+                <button type="submit" class="btn btn-primary">Change Password</button>
+            </form>
+        </div>
     </div>
-</div>
 
 
 

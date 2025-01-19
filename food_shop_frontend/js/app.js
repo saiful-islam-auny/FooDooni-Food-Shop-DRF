@@ -55,25 +55,26 @@ document.addEventListener("DOMContentLoaded", () => {
               );
               if (categoryContainer) {
                 categoryContainer.innerHTML += `
-                                    <div class="col-md-4 text-center">
-                                        <div class="menu-wrap">
-                                            <a href="#" class="menu-img img mb-4" style="background-image: url(${item.image
-                  });"></a>
-                                            <div class="text">
-                                                <h3><a href="#">${item.name
-                  }</a></h3>
-                                                <p>${item.description
-                    .split(" ")
-                    .slice(0, 10)
-                    .join(" ")}...</p>
-                                                <p class="price"><span>$${item.price
-                  }</span></p>
-                                <p><button class="btn btn-white btn-outline-white add-to-cart" data-id="${item.id
-                  }">Add to cart</button></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
+                <div class="col-md-4 text-center">
+                  <div class="menu-wrap">
+                    <!-- Clickable image -->
+                    <a href="details.html?id=${item.id}" class="menu-img img mb-4 clickable-link" style="background-image: url(${item.image});"></a>
+                    <div class="text">
+                      <!-- Clickable name -->
+                      <h3><a href="details.html?id=${item.id}" class="clickable-link">${item.name}</a></h3>
+                      <!-- Description -->
+                      <p>${item.description.split(" ").slice(0, 10).join(" ")}...</p>
+                      <!-- Price -->
+                      <p class="price"><span>$${item.price}</span></p>
+                      <!-- Add to Cart Button -->
+                      <p>
+                        <button class="btn btn-white btn-outline-white add-to-cart" data-id="${item.id}">Add to cart</button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              `;
+
               } else {
                 console.error(
                   `No container found for category ID: ${categoryId}`
@@ -84,11 +85,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 `No matching category ID for item: ${item.name}, category: ${item.category}`
               );
             }
+            // Add click event listeners to cards
+            const cards = document.querySelectorAll(".clickable-link");
+            cards.forEach((card) => {
+              card.addEventListener("click", () => {
+                const itemId = card.getAttribute("data-id");
+                window.location.href = `details.html?id=${itemId}`;
+              });
+            });
           });
         })
         .catch((error) => console.error("Error fetching food items:", error));
     })
     .catch((error) => console.error("Error fetching categories:", error));
+
 });
 
 // discount item js start
@@ -141,13 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="col-md-4 mb-5">
               <div class="card h-100">
                 <div class="position-relative">
-                  <img src="${imageUrl}" class="card-img-top" alt="${item.name
-          }">
+                  <img src="${imageUrl}" class="card-img-top clickable-link" data-id="${item.id}" alt="${item.name}">
                   <div class="discount-badge">-${discountPercentage}%</div>
                 </div>
                 <div class="card-body d-flex flex-column">
-                  <h5 class="card-title">${item.name}</h5>
-                  <p class="card-text">${item.description
+                  <h5 class="card-title clickable-link" data-id="${item.id}">${item.name}</h5>
+                  <p class="card-text" data-id="${item.id}">${item.description
             .split(" ")
             .slice(0, 10)
             .join(" ")}...</p>
@@ -166,6 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
         // Append card to the container
         discountContainer.innerHTML += itemHTML;
       });
+
+      // Add click event listeners to cards
+      const cards = document.querySelectorAll(".clickable-link");
+      cards.forEach((card) => {
+        card.addEventListener("click", () => {
+          const itemId = card.getAttribute("data-id");
+          window.location.href = `details.html?id=${itemId}`;
+        });
+      });
     })
     .catch((error) => {
       console.error("Error fetching discounted items:", error);
@@ -175,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 });
-
 
 // cart functionality start fom here
 document.addEventListener("DOMContentLoaded", () => {
@@ -278,6 +295,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function showToast(message, type = "success") {
+  // Create the toast element
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  // Add content to the toast
+  toast.innerHTML = `
+    <div class="toast-icon">
+      ${type === "success" ? "✔️" : type === "error" ? "❌" : "ℹ️"}
+    </div>
+    <div>${message}</div>
+  `;
+
+  // Append to the toast container
+  const container = document.getElementById("toast-container");
+  container.appendChild(toast);
+
+  // Remove the toast after 5 seconds
+  setTimeout(() => {
+    toast.remove();
+  }, 5000);
+}
 // show the cart count
 document.addEventListener("DOMContentLoaded", () => {
   const API_CART_URL = "http://127.0.0.1:8000/api/cart/";
@@ -392,7 +431,10 @@ document.addEventListener("DOMContentLoaded", () => {
               : `http://127.0.0.1:8000${item.food_item.image}`
             : "https://via.placeholder.com/50";
 
-          const price = parseFloat(item.food_item.discounted_price || item.food_item.price) || 0;
+          const price =
+            parseFloat(
+              item.food_item.discounted_price || item.food_item.price
+            ) || 0;
           const total = (price * item.quantity).toFixed(2);
           totalCartPrice += price * item.quantity;
 
@@ -401,7 +443,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="cart-item-content">
               <!-- Row 1: Image -->
               <div class="col-3">
-                <img src="${imageUrl}" class="cart-item-img" alt="${item.food_item.name}">
+                <img src="${imageUrl}" class="cart-item-img" alt="${item.food_item.name
+            }">
               </div>
         
               <!-- Row 2: Name and Price -->
@@ -431,7 +474,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
         `;
-
 
           cartItemsContainer.innerHTML += blockHTML;
         });
@@ -527,31 +569,269 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Navigate to order page
+  // addToOrderButton.addEventListener("click", () => {
+  //   window.location.href = "/profile"; // Replace "/order" with your actual order page URL
+  // });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const API_ORDER_HISTORY_URL = "http://127.0.0.1:8000/api/order/history/";
+  const orderListContainer = document.getElementById("order-list");
+
+  if (!orderListContainer) {
+    console.error("Order list container not found in DOM.");
+    return;
+  }
+
+  fetchOrderHistory();
+
+  function fetchOrderHistory() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      orderListContainer.innerHTML = `
+        <li class="text-danger text-center">Please log in to view your order history.</li>
+      `;
+      return;
+    }
+
+    orderListContainer.innerHTML = `
+      <li class="text-muted text-center">Loading your order history...</li>
+    `;
+
+    fetch(API_ORDER_HISTORY_URL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        renderOrderHistory(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching order history:", error);
+        orderListContainer.innerHTML = `
+          <li class="text-danger text-center">Failed to load order history: ${error.message}</li>
+        `;
+      });
+  }
+
+  function renderOrderHistory(orders) {
+    orderListContainer.innerHTML = "";
+
+    if (!orders || orders.length === 0) {
+      orderListContainer.innerHTML = `
+        <li class="text-center">You have no orders in your history.</li>
+      `;
+      return;
+    }
+
+    const BASE_URL = "http://127.0.0.1:8000"; // Base URL for the images
+
+    orders.forEach((order) => {
+      const orderHTML = `
+        <li class="order-item">
+          <div class="order-header">
+            <h5>Order No: ${order.id}</h5>
+            <p class="order-date">Date: ${new Date(
+        order.created_at
+      ).toLocaleDateString()}</p>
+            <p class="order-status">Status: ${order.status}</p>
+            <p class="order-total">Total: $${parseFloat(
+        order.total_price
+      ).toFixed(2)}</p>
+          </div>
+          <ul class="order-items">
+            ${order.items
+          .map(
+            (item) => `
+              <li class="order-item-detail">
+                <img src="${item.food_item_image
+                ? BASE_URL + item.food_item_image
+                : "https://via.placeholder.com/50"
+              }" 
+                     alt="${item.food_item_name}" class="item-image">
+                <span class="item-name">${item.food_item_name}</span>
+                <span class="item-quantity">Qty: ${item.quantity}</span>
+                <span class="item-price">$${parseFloat(
+                item.food_item_discounted_price
+              ).toFixed(2)}</span>
+              </li>
+            `
+          )
+          .join("")}
+          </ul>
+        </li>
+      `;
+
+      orderListContainer.innerHTML += orderHTML;
+    });
+  }
+});
+
+// make order
+document.addEventListener("DOMContentLoaded", () => {
+  // Get required elements
+  const addToOrderButton = document.getElementById("add-to-order");
+  const orderModal = document.getElementById("orderModal");
+  const closeModalButton = document.querySelector(".close-button");
+  const orderForm = document.getElementById("order-form");
+
+  // Show modal when "Add to Order" is clicked
   addToOrderButton.addEventListener("click", () => {
-    window.location.href = "/order"; // Replace "/order" with your actual order page URL
+    orderModal.classList.remove("hidden");
+  });
+
+  // Close modal when the close button is clicked
+  closeModalButton.addEventListener("click", () => {
+    orderModal.classList.add("hidden");
+  });
+
+  // Close modal when clicking outside the modal content
+  window.addEventListener("click", (event) => {
+    if (event.target === orderModal) {
+      orderModal.classList.add("hidden");
+    }
+  });
+
+  // Handle form submission
+  orderForm.addEventListener("submit", async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    // Get input values
+    const deliveryAddress = document
+      .getElementById("delivery-address")
+      .value.trim();
+    const phoneNumber = document.getElementById("phone-number").value.trim();
+
+    // Validate inputs
+    if (!deliveryAddress || !phoneNumber) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      // Send POST request to the API
+      const response = await fetch("http://127.0.0.1:8000/api/order/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include user's token
+        },
+        body: JSON.stringify({
+          delivery_address: deliveryAddress,
+          phone_number: phoneNumber,
+        }),
+      });
+
+      // Handle response
+      if (response.ok) {
+        alert("Order placed successfully!");
+        orderModal.classList.add("hidden"); // Close the modal
+        window.location.reload(); // Reload the page to clear the cart
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Failed to place order.");
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("An unexpected error occurred.");
+    }
   });
 });
 
-function showToast(message, type = "success") {
-  // Create the toast element
-  const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
 
-  // Add content to the toast
-  toast.innerHTML = `
-    <div class="toast-icon">
-      ${type === "success" ? "✔️" : type === "error" ? "❌" : "ℹ️"}
-    </div>
-    <div>${message}</div>
-  `;
+// item details 
+document.addEventListener("DOMContentLoaded", () => {
+  const API_BASE_URL = "http://127.0.0.1:8000/api/menu";
 
-  // Append to the toast container
-  const container = document.getElementById("toast-container");
-  container.appendChild(toast);
+  // Get item ID from URL query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const itemId = urlParams.get("id");
 
-  // Remove the toast after 5 seconds
-  setTimeout(() => {
-    toast.remove();
-  }, 5000);
-}
+  if (!itemId) {
+    document.getElementById("item-details").innerHTML =
+      "<p class='text-danger'>Item ID is missing in the URL.</p>";
+    return;
+  }
 
+  // Fetch item details
+  fetch(`${API_BASE_URL}/food-items/${itemId}/`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((item) => {
+      const imageUrl = item.image
+        ? item.image.startsWith("http")
+          ? item.image
+          : `http://127.0.0.1:8000${item.image}`
+        : "https://via.placeholder.com/600"; // Fallback image
+
+      const itemHTML = `
+        <div class="container">
+          <div class="row align-items-center mb-4">
+            <!-- Image Section -->
+            <div class="col-lg-6 col-md-12 mb-4">
+              <img src="${imageUrl}" alt="${item.name}" class="details-image img-fluid">
+            </div>
+            <!-- Details Section -->
+            <div class="col-lg-6 col-md-12">
+              <h1 class="details-heading">${item.name}</h1>
+              <p class="details-price">
+                <span class="original-price">$${parseFloat(item.price).toFixed(2)}</span>
+                <span class="discounted-price">$${parseFloat(item.discounted_price).toFixed(2)}</span>
+              </p>
+              <p class="details-description">${item.description}</p>
+              <p class="details-category-btn">${item.category}</p>
+              <p><button class="btn btn-primary add-to-cart" data-id="${item.id}">Add to cart</button></p>
+            </div>
+          </div>
+          <!-- Review Section -->
+          <div class="row mt-5 mb-5">
+            <div class="col-12">
+              <h2>Reviews</h2>
+              <div id="reviews">
+                <p>No reviews yet. Be the first to leave a review!</p>
+              </div>
+              <!-- Add Review Form -->
+              <div class="mt-4">
+                <h3>Leave a Review</h3>
+                <form id="review-form">
+                  <div class="mb-3">
+                    <label for="review-text" class="form-label">Your Review</label>
+                    <textarea id="review-text" class="form-control" rows="4" placeholder="Write your review here..."></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("item-details").innerHTML = itemHTML;
+
+      // Add event listener for "Add to cart" button
+      const addToCartButton = document.querySelector(".add-to-cart");
+      if (addToCartButton) {
+        addToCartButton.addEventListener("click", () => {
+          showToast("Item added to cart!", "success");
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching item details:", error);
+      document.getElementById("item-details").innerHTML =
+        "<p class='text-danger'>Failed to load item details. Please try again later.</p>";
+    });
+});

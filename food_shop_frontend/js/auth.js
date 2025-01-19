@@ -92,7 +92,6 @@ const handleLogin = (event) => {
   }
 };
 
-
 document.addEventListener("DOMContentLoaded", function () {
   // Get token from localStorage
   const token = localStorage.getItem("token");
@@ -125,17 +124,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-
-
 // profile showing
 const API_PROFILE_URL = "http://127.0.0.1:8000/api/user/profile/";
-const API_CHANGE_PASSWORD_URL = "http://127.0.0.1:8000/api/user/changepassword/";
-const API_RESET_PASSWORD_URL = "http://127.0.0.1:8000/api/user/send-reset-password-email/";
-
+const API_CHANGE_PASSWORD_URL =
+  "http://127.0.0.1:8000/api/user/changepassword/";
+const API_RESET_PASSWORD_URL =
+  "http://127.0.0.1:8000/api/user/send-reset-password-email/";
 
 function showToastProfile(message, type = "info") {
   let container = document.getElementById("toast-profile-container");
-  
+
   // If the container doesn't exist, create it
   if (!container) {
     container = document.createElement("div");
@@ -159,7 +157,6 @@ function showToastProfile(message, type = "info") {
     }, 300); // Match fade-out duration
   }, 3000);
 }
-
 
 // Fetch user profile
 function fetchUserProfile() {
@@ -201,16 +198,17 @@ function setupChangePasswordModal() {
   const changePasswordForm = document.getElementById("change-password-form");
 
   // Show the modal when the button is clicked
-  document.getElementById("change-password-btn").addEventListener("click", () => {
-    changePasswordModal.style.display = "block";
-  });
+  document
+    .getElementById("change-password-btn")
+    .addEventListener("click", () => {
+      changePasswordModal.style.display = "block";
+    });
 
   // Close the modal when the close button is clicked
   closeBtn.addEventListener("click", () => {
     console.log("Closing modal..."); // Debugging line
     changePasswordModal.style.display = "none";
   });
-
 
   // Handle form submission
   changePasswordForm.addEventListener("submit", (e) => {
@@ -231,7 +229,10 @@ function setupChangePasswordModal() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ password: newPassword, password2: confirmPassword }),
+      body: JSON.stringify({
+        password: newPassword,
+        password2: confirmPassword,
+      }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -254,35 +255,6 @@ function setupChangePasswordModal() {
 }
 
 setupChangePasswordModal();
-
-
-// Handle reset password
-document.getElementById("reset-password-btn").addEventListener("click", () => {
-  const email = document.getElementById("user-email").textContent;
-
-  fetch(API_RESET_PASSWORD_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to send reset email");
-      }
-      return response.json();
-    })
-    .then(() => {
-      Profile("Reset password email sent!", "success");
-    })
-    .catch((error) => {
-      console.error(error);
-      Profile("Error sending reset email.", "error");
-    });
-});
-
 // Initialize
 fetchUserProfile();
 setupChangePasswordModal();
-
-
-
